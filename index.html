@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>ランダムに光るボタン（スマホ用）</title>
+        <style>
+            @charset "UTF-8";
+            #gameScreen {
+                width: 40vw;
+                height: 40vw;
+            }
+            button {
+                margin: 1vw;
+                width: 8vw;
+                height: 8vw;
+                border-radius: 50%;
+                -webkit-tap-highlight-color: rbga(0,0,0,0); /* スマホだと出てくるタップ後の影を透明に */
+            }
+            #startBtn {
+                width: 8vw;
+                height: 4vw;
+                border-radius: 0%;
+            }
+            /* 緑のボタンは押した瞬間赤くなる */
+            /* touchstartイベントだとほとんど表示されない */
+            /* 端っこ押すと、赤くなるけど点数増えない!なぜ? */
+            button[style="background-color: green;"]:active {
+                background-color: red;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- 回答数と得点を表示 -->
+        <div>
+            <div>
+                出題回数: <input type="number" id="numQ" value="30"> [個]
+            </div>
+            <div>
+                出題間隔: <input type="number" id="interval" value="500"> [ms]
+            </div>
+            <div>
+                得点: <span id="score">0</span> / <span id="numA">0</span>
+            </div>
+        </div>
+        <!-- スタートボタン -->
+        <button id="startBtn">START</button>
+        <!-- ゲーム画面 -->
+        <div id="gameScreen"></div>
+        
+        <script>
+            'use strict';
+
+            // 丸ボタンを描画
+            // ボタンの改行は、ボタンの大きさとスクリーンの大きさを適切に設定すれば可能
+            let numBtn = 16;
+            let button;
+            let gameScreen = document.getElementById('gameScreen');
+            for (let n = 0; n < numBtn; n++) {
+                button = document.createElement('button');
+                button.setAttribute('value', n);
+                gameScreen.appendChild(button);
+            }
+
+            // start button をタッチするとgame start
+            let startBtn = document.getElementById('startBtn');
+            startBtn.addEventListener('touchstart', startGame, {passive:true});
+
+            // ゲームを開始する関数
+            let numQ; // 出題数
+            let interval; // 出題間隔[ms]
+            let numA; // 回答数
+            let score; // 得点
+            function startGame() {
+                // スタートボタンを無効化
+                startBtn.removeEventListener('touchstart', startGame);
+                startBtn.innerHTML = '';
+
+                // 各種設定をリセット
+                numQ = Number(document.getElementById('numQ').value);
+                interval = Number(document.getElementById('interval').value);
+                numA = 0;
+                score = 0;
+                document.getElementById('numA').innerHTML = numA;
+                document.getElementById('score').innerHTML = score;
+
+                // 一定時間ごとにランダムなボタンを緑にする。すべての問題を解くと終了
+                changeGreenBtn();
+            }
+
+            // 一定時間ごとにランダムなボタンを緑にする関数 すべての問題を解くと終了
+            function changeGreenBtn() {
+                // 前の緑のボタンを消去
+                let oldGreenBtn = document.querySelector('button[style="background-color: green;"]');
+                if (oldGreenBtn != null) {
+                    oldGreenBtn.removeAttribute('style');
+                    oldGreenBtn.removeEventListener('touchstart', pushGreenBtn);
+                }
+
+                // 回答数が出題数と同じだったら終了
+                if (numA == numQ) {
+                    // スタートボタンの有効化
+                    startBtn.addEventListener('touchstart', startGame, {passive:true});
+                    startBtn.innerHTML = 'START'
+                    return;
+                }
+
+                // でなければ、回答数を1増やす
+                numA++;
+                document.getElementById('numA').innerHTML = numA; // 回答数表示
+
+                // ランダムなボタンを緑に
+                let greenBtn = document.querySelector('button[value="' + getRandomInt(0, numBtn) + '"]');
+                greenBtn.style.backgroundColor = 'green';
+                greenBtn.addEventListener('touchstart', pushGreenBtn, {passive:true}); // 緑のボタンを押すと1得点追加
+
+                // 500ms後に別のボタンを緑に
+                setTimeout(changeGreenBtn, interval);
+            }
+
+            // 緑のボタンが押されたときに得点を追加する関数
+            function pushGreenBtn() {
+                let greenBtn = document.querySelector('button[style="background-color: green;"]');
+                // 一度押したら、緑でなくする
+                greenBtn.removeAttribute('style');
+                greenBtn.removeEventListener('touchstart', pushGreenBtn);
+
+                score++; // +1点
+                document.getElementById('score').innerHTML = score; // 得点表示
+            }
+
+            // min以上max未満のランダムな整数を返す関数
+            function getRandomInt(min, max) {
+                min = Math.ceil(min);
+                max = Math.floor(max);
+                return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+            }
+        </script>
+    </body>
+</html>
