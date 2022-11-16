@@ -6,20 +6,20 @@
         <style>
             @charset "UTF-8";
             #gameScreen {
-                width: 40vw;
-                height: 40vw;
+                width: 100vw;
+                height: 100vw;
             }
             button {
                 margin: 1vw;
-                width: 8vw;
-                height: 8vw;
+                width: 17vw;
+                height: 17vw;
                 border-radius: 50%;
                 /* スマホだと出てくるタップ後の影を透明に */
                 -webkit-tap-highlight-color: rgba(0,0,0,0);
             }
             #startBtn {
-                width: 8vw;
-                height: 4vw;
+                width: 18vw;
+                height: 9vw;
                 border-radius: 0%;
             }
         </style>
@@ -47,10 +47,9 @@
 
             // 丸ボタンを描画
             // ボタンの改行は、ボタンの大きさとスクリーンの大きさを適切に設定すれば可能
-            let numBtn = 16;
             let button;
             let gameScreen = document.getElementById('gameScreen');
-            for (let n = 0; n < numBtn; n++) {
+            for (let n = 0; n < 25; n++) {
                 button = document.createElement('button');
                 button.setAttribute('value', n);
                 gameScreen.appendChild(button);
