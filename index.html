@@ -47,9 +47,10 @@
 
             // 丸ボタンを描画
             // ボタンの改行は、ボタンの大きさとスクリーンの大きさを適切に設定すれば可能
+            let numBtn = 25;
             let button;
             let gameScreen = document.getElementById('gameScreen');
-            for (let n = 0; n < 25; n++) {
+            for (let n = 0; n < numBtn; n++) {
                 button = document.createElement('button');
                 button.setAttribute('value', n);
                 gameScreen.appendChild(button);
