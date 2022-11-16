@@ -22,12 +22,6 @@
                 height: 4vw;
                 border-radius: 0%;
             }
-            /* 緑のボタンは押した瞬間赤くなる */
-            /* touchstartイベントだとほとんど表示されない */
-            /* 端っこ押すと、赤くなるけど点数増えない!なぜ? */
-            button[style="background-color: green;"]:active {
-                background-color: red;
-            }
         </style>
     </head>
     <body>
@@ -90,11 +84,11 @@
 
             // 一定時間ごとにランダムなボタンを緑にする関数 すべての問題を解くと終了
             function changeGreenBtn() {
-                // 前の緑のボタンを消去
-                let oldGreenBtn = document.querySelector('button[style="background-color: green;"]');
-                if (oldGreenBtn != null) {
-                    oldGreenBtn.removeAttribute('style');
-                    oldGreenBtn.removeEventListener('touchstart', pushGreenBtn);
+                // ボタンの色を消去
+                let colorBtn = document.querySelector('button[style]');
+                if (colorBtn != null) {
+                    colorBtn.removeAttribute('style');
+                    colorBtn.removeEventListener('touchstart', pushGreenBtn);
                 }
 
                 // 回答数が出題数と同じだったら終了
@@ -121,8 +115,9 @@
             // 緑のボタンが押されたときに得点を追加する関数
             function pushGreenBtn() {
                 let greenBtn = document.querySelector('button[style="background-color: green;"]');
-                // 一度押したら、緑でなくする
+                // 一度押したら赤にする
                 greenBtn.removeAttribute('style');
+                greenBtn.style.backgroundColor = 'red';
                 greenBtn.removeEventListener('touchstart', pushGreenBtn);
 
                 score++; // +1点
